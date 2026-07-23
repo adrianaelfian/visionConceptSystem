@@ -41,11 +41,14 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+
+        // Kita juga pastikan password merujuk kepada 'password'
+        // (yang sudah dihandle oleh getAuthPassword dalam Model user)
+        if (! Auth::attempt(['email' => $this->input('email'), 'password' => $this->password], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Email yang dicari: ' . $this->input('email'),
             ]);
         }
 
@@ -80,6 +83,8 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
+        // Tukar $this->input('email') kepada apa-apa yang konsisten
+        // supaya rate limiter tidak terkeliru.
         return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
 }
