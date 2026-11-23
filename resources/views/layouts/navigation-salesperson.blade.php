@@ -18,19 +18,18 @@
 
             <a href="{{ route('salesperson.customer.index') }}" class="flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('salesperson.customer.*') ? 'bg-white text-[#3b127e] shadow-md font-bold' : 'text-purple-200 hover:bg-white/5 hover:text-white' }} rounded-xl transition">
                 <i class="fa-solid fa-users w-4"></i>
-                <span>Customer Details</span>
-            </a>
-
-
-            <a href="{{ route('salesperson.orders.create') }}" class="flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('salesperson.orders.create') ? 'bg-white text-[#3b127e] shadow-md font-bold' : 'text-purple-200 hover:bg-white/5 hover:text-white' }} rounded-xl transition">
-                <i class="fa-solid fa-cart-plus w-4"></i>
-                <span>Create Order</span>
+                <span>Customer Prescription</span>
             </a>
 
             <a href="{{ route('salesperson.orders.index') }}" class="flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('salesperson.orders.index', 'salesperson.orders.edit') ? 'bg-white text-[#3b127e] shadow-md font-bold' : 'text-purple-200 hover:bg-white/5 hover:text-white' }} rounded-xl transition">
                 <i class="fa-solid fa-clipboard-list w-4"></i>
                 <span>Manage Orders</span>
             </a>
+
+            <a href="{{ route('salesperson.appointments.index') }}" class="flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('salesperson.appointments.index') ? 'bg-white text-[#3b127e] shadow-md font-bold' : 'text-purple-200 hover:bg-white/5 hover:text-white' }} rounded-xl transition">
+    <i class="fa-solid fa-calendar-days w-4"></i>
+    <span>View Appointments</span>
+</a>
         </nav>
     </div>
 

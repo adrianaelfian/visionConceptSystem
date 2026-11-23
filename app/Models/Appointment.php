@@ -12,11 +12,13 @@ class Appointment extends Model
     protected $primaryKey = 'appointmentID';
 
     protected $fillable = [
-        'customerID',
-        'appointmentDate',
-        'appointmentTime',
-        'status'
-    ];
+    'customerID',
+    'created_by',
+    'appointmentDate',
+    'appointmentTime',
+    'reason', // <-- Pastikan ada di sini
+    'status',
+];
 
     public function customer(){
         return $this->belongsTo(Customer::class, 'customerID');    }

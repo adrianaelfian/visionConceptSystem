@@ -9,19 +9,20 @@
             <p class="text-sm text-slate-500 mt-1">List of all generated sales and business performance reports.</p>
         </div>
 
-        <!-- Quick Action Buttons -->
+        <!-- Quick Action Buttons (Print / PDF dibuang) -->
         <div class="flex items-center space-x-3">
-            <button onclick="window.print()" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition shadow-sm">
-                <i class="fa-solid fa-print text-xs"></i>
-                <span>Print / PDF</span>
-            </button>
+            <a href="{{ route('manager.GenerateReports.create') }}" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-[#6d28d9] text-white hover:bg-purple-800 transition shadow-sm">
+                <i class="fa-solid fa-plus text-xs"></i>
+                <span>Generate New Report</span>
+            </a>
         </div>
     </div>
 
     <!-- Success Message (if any) -->
     @if(session('success'))
-        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm font-medium shadow-sm">
-            {{ session('success') }}
+        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl text-sm font-medium shadow-sm flex items-center space-x-2">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>{{ session('success') }}</span>
         </div>
     @endif
 
@@ -43,16 +44,21 @@
                     @forelse($reports as $report)
                         <tr class="hover:bg-slate-50/50 transition">
                             <td class="py-4 px-6 font-semibold text-slate-700">#{{ $report->id }}</td>
-                            <td class="py-4 px-6 font-medium text-slate-800">{{ $report->report_type }}</td>
+                            <td class="py-4 px-6 font-medium text-slate-800">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-50 text-[#6d28d9]">
+                                    {{ $report->report_type }}
+                                </span>
+                            </td>
                             <td class="py-4 px-6 text-slate-600">{{ $report->start_date }}</td>
                             <td class="py-4 px-6 text-slate-600">{{ $report->end_date }}</td>
                             <td class="py-4 px-6 text-slate-500">{{ $report->created_at->format('d M Y, h:i A') }}</td>
                             <td class="py-4 px-6 text-center">
-                                <div class="inline-flex items-center space-x-2">
-                                    <a href="{{ route('manager.reports.show', $report->id) }}" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white transition shadow-sm">
-                                        <i class="fa-solid fa-eye text-xs"></i>
-                                        <span>View</span>
-                                    </a>
+                                <div class="inline-flex items-center space-x-2 justify-center">
+                                    <!-- PDF Export Button (Dimasukkan Semula) -->
+        <a href="{{ route('manager.reports.pdf', $report->id) }}" target="_blank" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition shadow-sm" title="Export PDF">
+            <i class="fa-solid fa-file-pdf text-xs"></i>
+            <span>PDF</span>
+        </a>
                                 </div>
                             </td>
                         </tr>

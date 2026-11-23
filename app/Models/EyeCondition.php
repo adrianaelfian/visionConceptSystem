@@ -9,23 +9,36 @@ class EyeCondition extends Model
 {
     use HasFactory;
 
-    // Pastikan ini sama dengan nama primary key di phpMyAdmin
     protected $table = 'eye_conditions';
 
-    // Senaraikan semua column yang anda buat dalam SQL tadi
+    // Tetapkan Primary Key kerana pangkalan data anda menggunakan 'conditionID'
+    protected $primaryKey = 'conditionID';
+
+    // Jika conditionID jenis auto-increment integer (biasanya ya):
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+    // Tambah 'customer_id' ke dalam senarai fillable
     protected $fillable = [
-        'appointmentID','salespersonID', 'rightPower', 'leftPower',
-        'rightCylinder', 'leftCylinder', 'rightAxis',
-        'leftAxis', 'pupilDistance'
+        'customer_id',
+        'appointmentID',
+        'salespersonID',
+        'rightPower',
+        'leftPower',
+        'rightCylinder',
+        'leftCylinder',
+        'rightAxis',
+        'leftAxis',
+        'pupilDistance'
     ];
 
-    // Hubungan dengan model Customer
+    // Hubungan dengan model Customer menggunakan kolum customer_id
     public function customer()
     {
-        return $this->belongsTo(Customer::class, 'customerID', 'customerID');
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
-    // Tambah ini ke dalam class EyeCondition
+    // Hubungan dengan model Appointment
     public function appointment()
     {
         return $this->belongsTo(Appointment::class, 'appointmentID', 'appointmentID');

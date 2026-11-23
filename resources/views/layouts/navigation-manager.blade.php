@@ -13,14 +13,26 @@
         <nav class="space-y-1.5 text-xs font-semibold">
             <!-- Menu Dashboard -->
             <a href="{{ route('manager.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('manager.dashboard') ? 'bg-white text-[#3b127e] shadow-md font-bold' : 'text-purple-200 hover:bg-white/5 hover:text-white' }} rounded-xl transition">
-                <i class="fa-solid fa-chart-pie w-4"></i>
+                <i class="fa-solid fa-chart-pie w-4 text-center"></i>
                 <span>Dashboard</span>
+            </a>
+
+            <!-- Menu Manage Account (Tukar ikon kepada fa-users-gear atau fa-user-shield) -->
+            <a href="{{ route('manager.accounts.index') }}" class="flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('manager.accounts.*') ? 'bg-white text-[#3b127e] shadow-md font-bold' : 'text-purple-200 hover:bg-white/5 hover:text-white' }} rounded-xl transition">
+                <i class="fa-solid fa-users-gear w-4 text-center"></i>
+                <span>Manage Account</span>
             </a>
 
             <!-- Menu Manage Reports -->
             <a href="{{ route('manager.reports.index') }}" class="flex items-center space-x-3 px-4 py-3 {{ request()->routeIs('manager.reports.*') ? 'bg-white text-[#3b127e] shadow-md font-bold' : 'text-purple-200 hover:bg-white/5 hover:text-white' }} rounded-xl transition">
-                <i class="fa-solid fa-file-lines w-4"></i>
-                <span>Manage Reports</span>
+                <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                <span>Reports</span>
+            </a>
+
+            <!-- Menu Manage Inventory Item -->
+            <a href="{{ route('manager.items.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-semibold transition {{ request()->routeIs('manager.items.*') ? 'bg-white text-[#3b127e] shadow-sm font-bold' : 'text-purple-200 hover:bg-white/5 hover:text-white' }}">
+                <i class="fa-solid fa-boxes-stacked w-4 text-center"></i>
+                <span>Manage Inventory</span>
             </a>
         </nav>
     </div>

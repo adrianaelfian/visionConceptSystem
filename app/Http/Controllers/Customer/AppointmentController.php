@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Customer;
-use App\Models\AppointmentLog;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -14,28 +13,25 @@ class AppointmentController extends Controller
     {
         $validated = $request->validate([
             'customerID'      => 'required|exists:customers,id',
-            'appointmentDate' => 'required|date|after:today',
+            'appointmentDate' => 'required|date|after_or_equal:today',
             'appointmentTime' => 'required',
         ]);
 
+        // Semak ketersediaan slot (pastikan tidak dikira jika status Cancelled)
         $isAvailable = Appointment::where('appointmentDate', $request->appointmentDate)
                                    ->where('appointmentTime', $request->appointmentTime)
+                                   ->where('status', '!=', 'Cancelled')
                                    ->doesntExist();
+
         if (!$isAvailable) {
-            return back()->withErrors(['error' => 'This slot is not available!']);
+            return back()->withErrors(['appointmentTime' => 'This slot is not available!'])->withInput();
         }
 
-        $appointment = Appointment::create([
+        Appointment::create([
             'customerID'      => $request->customerID,
             'appointmentDate' => $request->appointmentDate,
             'appointmentTime' => $request->appointmentTime,
             'status'          => 'Scheduled'
-        ]);
-
-        AppointmentLog::create([
-            'appointmentID' => $appointment->id ?? $appointment->appointmentID,
-            'action'        => 'Created',
-            'details'       => 'New appointment created for customer ID ' . $request->customerID
         ]);
 
         return redirect()->route('admin.appointments.index')->with('success', 'Appointment successfully made!');
@@ -62,32 +58,28 @@ class AppointmentController extends Controller
     public function update(Request $request, mixed $id)
     {
         $request->validate([
-            'appointmentDate' => 'required|date|after:today',
+            'appointmentDate' => 'required|date|after_or_equal:today',
             'appointmentTime' => 'required',
         ]);
 
         $appointment = Appointment::findOrFail($id);
-        $primaryKey = $appointment->getKeyName(); // Mendapatkan nama primary key model (id / appointmentID)
+        $primaryKey = $appointment->getKeyName();
 
+        // Semak ketersediaan slot kecuali untuk temujanji ini sendiri
         $isAvailable = Appointment::where('appointmentDate', $request->appointmentDate)
                                    ->where('appointmentTime', $request->appointmentTime)
+                                   ->where('status', '!=', 'Cancelled')
                                    ->where($primaryKey, '!=', $id)
                                    ->doesntExist();
 
         if (!$isAvailable) {
-            return back()->withErrors(['error' => 'This slot is not available']);
+            return back()->withErrors(['appointmentTime' => 'This slot is not available!'])->withInput();
         }
 
         $appointment->update([
             'appointmentDate' => $request->appointmentDate,
             'appointmentTime' => $request->appointmentTime,
             'status'          => 'Rescheduled'
-        ]);
-
-        AppointmentLog::create([
-            'appointmentID' => $id,
-            'action'        => 'Updated',
-            'details'       => 'Appointment rescheduled to ' . $request->appointmentDate . ' at ' . $request->appointmentTime
         ]);
 
         return redirect()->route('admin.appointments.index')->with('success', 'Appointment updated!');
@@ -98,12 +90,20 @@ class AppointmentController extends Controller
         $appointment = Appointment::findOrFail($id);
         $appointment->update(['status' => 'Cancelled']);
 
-        AppointmentLog::create([
-            'appointmentID' => $id,
-            'action'        => 'Cancelled',
-            'details'       => 'Appointment cancelled by admin'
-        ]);
-
         return redirect()->route('admin.appointments.index')->with('success', 'Appointment cancelled successfully!');
+    }
+
+    public function generateReport(Request $request)
+    {
+        // Fetch data dengan pilihan tapisan tarikh jika ada
+        $query = Appointment::query();
+
+        if ($request->has('start_date') && $request->has('end_date') && $request->start_date && $request->end_date) {
+            $query->whereBetween('appointmentDate', [$request->start_date, $request->end_date]);
+        }
+
+        $appointments = $query->with('customer')->get();
+
+        return view('admin.reports.appointments', compact('appointments'));
     }
 }

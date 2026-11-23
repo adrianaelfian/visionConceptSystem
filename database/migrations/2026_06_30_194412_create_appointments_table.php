@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null'); // Ditambah: Staf yang merekodkan temujanji
             $table->date('appointmentDate');
             $table->time('appointmentTime');
+            $table->text('reason')->nullable();
             $table->string('status')->default('Scheduled');
             $table->timestamps();
         });

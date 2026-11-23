@@ -10,6 +10,32 @@
         </div>
     </div>
 
+    <!-- 🛑 BAHAGIAN NOTIFIKASI LOW STOCK (Letak di sini) -->
+    @if(isset($lowStockItems) && $lowStockItems->count() > 10)
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 md:p-5 shadow-xs space-y-3">
+            <div class="flex items-center space-x-2 text-amber-800">
+                <i class="fa-solid fa-triangle-exclamation text-base"></i>
+                <h3 class="text-xs font-black uppercase tracking-wider">Inventory Stock Alert (Low / Out of Stock)</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                @foreach($lowStockItems as $item)
+                    <div class="bg-white p-3 rounded-xl border border-amber-100 flex items-center justify-between text-xs shadow-xs">
+                        <span class="font-bold text-slate-700 truncate max-w-[150px]">{{ $item->name }}</span>
+                        @if($item->stock == 0)
+                            <span class="px-2 py-0.5 bg-rose-100 text-rose-700 font-black rounded-md text-[10px] uppercase">
+                                Out of Stock (0)
+                            </span>
+                        @else
+                            <span class="px-2 py-0.5 bg-amber-100 text-amber-800 font-bold rounded-md text-[10px]">
+                                Low: {{ $item->stock }} left
+                            </span>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <!-- Stat Kad (3 Grid) -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition">
@@ -39,49 +65,21 @@
         </div>
     </div>
 
-    <!-- Bahagian Bawah: Jadual Order Terbaru -->
-    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200/80">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-slate-800">Recent Orders</h3>
-            <span class="text-xs font-medium text-slate-400">Latest transactions</span>
-        </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="border-b border-slate-100 text-slate-400 text-xs font-semibold uppercase tracking-wider">
-                        <th class="pb-3 px-2">Order ID</th>
-                        <th class="pb-3 px-2">Date</th>
-                        <th class="pb-3 px-2 text-right">Amount</th>
-                    </tr>
-                </thead>
-                <tbody class="text-sm divide-y divide-slate-50 text-slate-600">
-                    @forelse($recentOrders as $order)
-                    <tr class="hover:bg-slate-50/50 transition">
-                        <td class="py-3.5 px-2 font-semibold text-slate-700">#{{ $order->id }}</td>
-                        <td class="py-3.5 px-2 text-slate-500">{{ $order->created_at->format('d M Y') }}</td>
-                        <td class="py-3.5 px-2 text-right font-bold text-slate-800">RM {{ number_format($order->total_price, 2) }}</td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="3" class="py-6 text-center text-slate-400 text-sm">No recent orders found.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
 
-<!-- Skrip Chart.js -->
+@php
+    $labels = $chartData['labels'] ?? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    $totals = $chartData['totals'] ?? [0, 0, 0, 0, 0, 0];
+@endphp
+
+<!-- 1) Muatkan Chart.js (tag ini mesti berasingan, jangan letak kod di dalamnya) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<!-- 2) Kod carta anda -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const ctx = document.getElementById('salesChart').getContext('2d');
-
-        @php
-            $labels = $chartData['labels'] ?? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-            $totals = $chartData['totals'] ?? [0, 0, 0, 0, 0, 0];
-        @endphp
 
         const chartLabels = @json($labels);
         const chartTotals = @json($totals);

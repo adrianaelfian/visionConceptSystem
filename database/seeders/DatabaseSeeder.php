@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Cipta Akaun Pengguna (Termasuk phone_number yang baru ditambah)
+        // 1. Cipta Akaun Pengguna
         User::create([
             'name' => 'Admin Sistem',
             'email' => 'admin@visionconcept.com',
-            'phoneNO' => '01112345678', // Lajur baru
+            'phoneNO' => '01112345678',
             'password' => Hash::make('password123'),
             'role' => 'admin',
         ]);
@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         $salesperson = User::create([
             'name' => 'Salesperson 1',
             'email' => 'salesperson@visionconcept.com',
-            'phoneNO' => '0123456789', // Lajur baru
+            'phoneNO' => '0123456789',
             'password' => Hash::make('password123'),
             'role' => 'salesperson',
         ]);
@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Store Manager',
             'email' => 'manager@visionconcept.com',
-            'phoneNO' => '0131234567', // Lajur baru
+            'phoneNO' => '0131234567',
             'password' => Hash::make('password123'),
             'role' => 'manager',
         ]);
@@ -48,49 +48,102 @@ class DatabaseSeeder extends Seeder
             'customerPhoneNumber' => '0198765432',
         ]);
 
-        // 3. Cipta Data Temujanji Dummy (Termasuk created_by yang baru ditambah)
+        // 3. Cipta Data Temujanji Dummy
         $appointment = Appointment::create([
             'customerID' => $customer->id,
             'status' => 'Pending',
             'appointmentDate' => now()->toDateString(),
             'appointmentTime' => now()->toTimeString(),
-            'created_by' => $salesperson->id, // Lajur baru: merujuk kepada ID staff yang merekodkan
+            'created_by' => $salesperson->id,
         ]);
 
-        // 4. Cipta Data Keadaan Mata (Eye Condition) berkaitan Appointment
+        // 4. Cipta Data Keadaan Mata (Eye Condition) berkaitan Customer & Appointment
         EyeCondition::create([
+            'customer_id'   => $customer->id, // Diselaraskan dengan struktur jadual baharu
             'appointmentID' => $appointment->appointmentID,
-            'rightPower' => -1.50,
-            'leftPower' => -1.75,
+            'rightPower'    => -1.50,
+            'leftPower'     => -1.75,
             'rightCylinder' => -0.50,
-            'leftCylinder' => -0.75,
-            'rightAxis' => 180,
-            'leftAxis' => 90,
+            'leftCylinder'  => -0.75,
+            'rightAxis'     => 180,
+            'leftAxis'      => 90,
             'pupilDistance' => 63.5,
             'salespersonID' => $salesperson->id,
         ]);
 
-        // 5. Cipta Senarai Produk / Item Kedai Cermin Mata (Lengkap dengan jenis type, brand, price)
-        $frame = Item::create([
-            'name' => 'Classic Titanium Frame (Black)',
-            'type' => 'Frame',
-            'brand' => 'Titanium',
-            'price' => 150.00,
-            'stock' => 15
-        ]);
+        // 5. Cipta Senarai Penuh Produk / Item Kedai Cermin Mata (Bingkai & Kanta)
+        $items = [
+            // Kategori Bingkai (Frames)
+            [
+                'name'  => 'Classic Titanium Frame (Black)',
+                'type'  => 'Frame',
+                'brand' => 'Titanium',
+                'price' => 150.00,
+                'stock' => 15
+            ],
+            [
+                'name'  => 'Modern Round Gold Frame',
+                'type'  => 'Frame',
+                'brand' => 'Ray-Ban',
+                'price' => 280.00,
+                'stock' => 10
+            ],
+            [
+                'name'  => 'Sporty Flexible Acetate Frame',
+                'type'  => 'Frame',
+                'brand' => 'Oakley',
+                'price' => 320.00,
+                'stock' => 8
+            ],
+            [
+                'name'  => 'Minimalist Wire-Rim Frame',
+                'type'  => 'Frame',
+                'brand' => 'Vogue',
+                'price' => 190.00,
+                'stock' => 12
+            ],
 
-        $lens = Item::create([
-            'name' => 'Anti-Blue Light Lenses (Standard)',
-            'type' => 'Lens',
-            'brand' => 'VisionCare',
-            'price' => 100.00,
-            'stock' => 50
-        ]);
+            // Kategori Kanta (Lenses)
+            [
+                'name'  => 'Anti-Blue Light Lenses (Standard)',
+                'type'  => 'Lens',
+                'brand' => 'VisionCare',
+                'price' => 100.00,
+                'stock' => 50
+            ],
+            [
+                'name'  => 'Anti-Reflective Multi-Coated Lens',
+                'type'  => 'Lens',
+                'brand' => 'Essilor',
+                'price' => 160.00,
+                'stock' => 40
+            ],
+            [
+                'name'  => 'Transition / Photochromic Lens',
+                'type'  => 'Lens',
+                'brand' => 'Transitions',
+                'price' => 250.00,
+                'stock' => 25
+            ],
+            [
+                'name'  => 'Progressive Multi-Focal Lens',
+                'type'  => 'Lens',
+                'brand' => 'Hoya',
+                'price' => 350.00,
+                'stock' => 20
+            ],
+        ];
 
-        // 6. Cipta Data Pesanan Dummy (Orders) (Termasuk salesperson_id)
+        // Simpan setiap item ke dalam pangkalan data dan simpan rujukan untuk pesanan dummy
+        $createdItems = [];
+        foreach ($items as $itemData) {
+            $createdItems[] = Item::create($itemData);
+        }
+
+        // 6. Cipta Data Pesanan Dummy (Orders)
         $order = Order::create([
             'customer_id'       => $customer->id,
-            'salesperson_id'    => $salesperson->id, // Lajur baru: merujuk jurujual yang handle order
+            'salesperson_id'    => $salesperson->id,
             'total_price'       => 250,
             'amount_paid'       => 100,
             'remaining_balance' => 150,
@@ -99,21 +152,21 @@ class DatabaseSeeder extends Seeder
             'order_date'        => now()->toDateString(),
         ]);
 
-        // 7. Cipta Hubungan Item di dalam Order Items (Termasuk kuantiti/quantity yang baru ditambah)
+        // 7. Cipta Hubungan Item di dalam Order Items menggunakan item pertama dan kelima (bingkai & kanta)
         DB::table('order_items')->insert([
             [
                 'order_id'   => $order->id,
-                'item_id'    => $frame->id,
+                'item_id'    => $createdItems[0]->id, // Classic Titanium Frame
                 'price'      => 150.00,
-                'quantity'   => 1, // Lajur baru: kuantiti bingkai yang dibeli
+                'quantity'   => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'order_id'   => $order->id,
-                'item_id'    => $lens->id,
+                'item_id'    => $createdItems[4]->id, // Anti-Blue Light Lenses
                 'price'      => 100.00,
-                'quantity'   => 1, // Lajur baru: kuantiti kanta yang dibeli
+                'quantity'   => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

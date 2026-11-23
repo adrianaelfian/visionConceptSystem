@@ -8,9 +8,9 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
                 <div>
                     <a href="{{ route('salesperson.customer.index') }}" class="inline-flex items-center text-xs font-semibold text-slate-500 hover:text-[#3b127e] transition mb-2">
-                        <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Customer Directory
+                        <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Customer Prescription
                     </a>
-                    <h1 class="text-2xl font-black text-[#2e1065]">Eye Condition Record</h1>
+                    <h1 class="text-2xl font-black text-[#2e1065]">Eye Prescription Record</h1>
                 </div>
 
                 <!-- Kad Paparan Nama Pelanggan -->

@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'role',
         'phoneNO',
+        'status',
     ];
 
     /**
@@ -45,4 +46,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Hubungan dengan Profil Pelanggan
+     */
+    public function customer()
+    {
+        return $this->hasOne(Customer::class, 'user_id');
+    }
 }

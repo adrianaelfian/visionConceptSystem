@@ -1,75 +1,54 @@
 @extends('layouts.manager')
 
 @section('content')
-<div class="space-y-6 max-w-4xl mx-auto">
-    <!-- Header & Back Button / Download PDF Action -->
-    <div class="flex items-center justify-between">
-        <div>
-            <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Report Details #{{ $report->id }}</h2>
-            <p class="text-sm text-slate-500 mt-1">Detailed information and performance summary for this report.</p>
+<div class="space-y-6 max-w-4xl mx-auto py-6">
+    <!-- Borang Generate System Report -->
+    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+        <div class="mb-6">
+            <h2 class="text-2xl font-black text-[#2e1065]">Generate System Report</h2>
+            <p class="text-xs text-slate-500 mt-1">Select the report type and date range to generate analytics or logs.</p>
         </div>
 
-        <div class="flex items-center space-x-3">
-            <!-- Butang Download PDF -->
-            <a href="{{ route('manager.reports.pdf', $report->id) }}" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 transition shadow-sm">
-                <i class="fa-solid fa-download text-xs"></i>
-                <span>Download PDF</span>
-            </a>
+        @if($errors->any())
+            <div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs font-medium space-y-1">
+                @foreach($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
 
-            <!-- Butang Kembali -->
-            <a href="{{ route('manager.reports.index') }}" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition shadow-sm">
-                <i class="fa-solid fa-arrow-left text-xs"></i>
-                <span>Back</span>
-            </a>
-        </div>
-    </div>
+        <form action="{{ route('manager.reports.generate') }}" method="POST" class="space-y-5">
+            @csrf
 
-    <!-- Main Information Card -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 md:p-8 space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 border-b border-slate-100">
             <div>
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Report Type</span>
-                <p class="text-lg font-bold text-slate-800 mt-1">{{ $report->report_type }}</p>
+                <label class="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Report Type</label>
+                <select name="report_type" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none focus:border-purple-500">
+                    <option value="" disabled selected>-- Choose report type --</option>
+                    <option value="Monthly Sales">Monthly Sales</option>
+                    <option value="Appointment Report">Appointment Report</option>
+                </select>
             </div>
-            <div>
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Generated Date</span>
-                <p class="text-lg font-bold text-slate-800 mt-1">{{ $report->created_at->format('d M Y, h:i A') }}</p>
-            </div>
-            <div>
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Start Date</span>
-                <p class="text-base font-semibold text-slate-700 mt-1">{{ $report->start_date }}</p>
-            </div>
-            <div>
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">End Date</span>
-                <p class="text-base font-semibold text-slate-700 mt-1">{{ $report->end_date }}</p>
-            </div>
-        </div>
 
-        <!-- Data Summary Section -->
-        <div>
-            <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">Statistics & Summary</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-purple-50/50 border border-purple-100 rounded-2xl p-5">
-                    <div class="flex items-center space-x-3 text-purple-600 mb-2">
-                        <i class="fa-solid fa-money-bill-wave text-xl"></i>
-                        <span class="text-sm font-semibold">Total Sales</span>
-                    </div>
-                    <p class="text-2xl font-black text-purple-900">
-                        RM {{ number_format($report->data_summary['total_sales'] ?? 0, 2) }}
-                    </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Start Date</label>
+                    <input type="date" name="start_date" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-purple-500">
                 </div>
-
-                <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5">
-                    <div class="flex items-center space-x-3 text-blue-600 mb-2">
-                        <i class="fa-solid fa-cart-shopping text-xl"></i>
-                        <span class="text-sm font-semibold">Total Orders</span>
-                    </div>
-                    <p class="text-2xl font-black text-blue-900">
-                        {{ $report->data_summary['total_orders'] ?? 0 }} Orders
-                    </p>
+                <div>
+                    <label class="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">End Date</label>
+                    <input type="date" name="end_date" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-purple-500">
                 </div>
             </div>
-        </div>
+
+            <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
+                <a href="{{ route('manager.reports.index') }}" class="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-200 transition">
+                    Back to Manage Reports
+                </a>
+                <button type="submit" class="px-6 py-2.5 bg-[#6d28d9] text-white rounded-xl text-xs font-bold hover:bg-purple-800 transition shadow-sm">
+                    Generate Report
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
