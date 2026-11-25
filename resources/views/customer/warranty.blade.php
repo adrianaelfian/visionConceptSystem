@@ -20,29 +20,35 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             @forelse($warranties ?? [] as $warranty)
-                <div class="p-4 bg-purple-50/60 border border-purple-100 rounded-xl space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold text-[#2e1065]">{{ $warranty->warranty_code }}</span>
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold {{ $warranty->status == 'Active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600' }}">
-                            {{ $warranty->status }}
-                        </span>
-                    </div>
+    <div class="p-4 bg-purple-50/60 border border-purple-100 rounded-xl space-y-3">
+        <div class="flex justify-between items-center">
+            <span class="text-xs font-bold text-[#2e1065]">
+                {{ $warranty->warranty_code ?? ('WRN-ORD-' . $warranty->order_id) }}
+            </span>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold {{ ($warranty->status ?? 'Active') == 'Active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600' }}">
+                {{ $warranty->status ?? 'Active' }}
+            </span>
+        </div>
 
-                    <div class="space-y-1 text-xs text-slate-600">
-                        <p><strong>Order ID:</strong> #ORD-{{ $warranty->order_id }}</p>
-                        <p><strong>Coverage:</strong> {{ $warranty->coverage_details ?? '2-Year Full Frame & Lens Coating Warranty' }}</p>
-                    </div>
+        <div class="space-y-1 text-xs text-slate-600">
+            <p><strong>Order ID:</strong> #ORD-{{ $warranty->order_id }}</p>
+            <p><strong>Coverage:</strong> {{ $warranty->coverage_details ?? '2-Year Full Frame & Lens Coating Warranty' }}</p>
+        </div>
 
-                    <div class="text-[10px] text-slate-400 flex justify-between border-t border-purple-100 pt-2 font-medium">
-                        <span>Started: {{ \Carbon\Carbon::parse($warranty->start_date)->format('d/m/Y') }}</span>
-                        <span class="text-purple-700 font-bold">Expires: {{ \Carbon\Carbon::parse($warranty->end_date)->format('d/m/Y') }}</span>
-                    </div>
-                </div>
-            @empty
-                <div class="col-span-2 p-8 text-center text-slate-400 text-xs italic">
-                    No active warranty records found for your account. Warranties are automatically generated upon order completion.
-                </div>
-            @endforelse
+        <div class="text-[10px] text-slate-400 flex justify-between border-t border-purple-100 pt-2 font-medium">
+            <span>
+                Started: {{ $warranty->start_date ? \Carbon\Carbon::parse($warranty->start_date)->format('d/m/Y') : '-' }}
+            </span>
+            <span class="text-purple-700 font-bold">
+                Expires: {{ $warranty->end_date ? \Carbon\Carbon::parse($warranty->end_date)->format('d/m/Y') : '-' }}
+            </span>
+        </div>
+    </div>
+@empty
+    <div class="col-span-2 p-8 text-center text-slate-400 text-xs italic">
+        No active warranty records found for your account. Warranties are automatically generated upon order completion.
+    </div>
+@endforelse
         </div>
     </div>
 </div>

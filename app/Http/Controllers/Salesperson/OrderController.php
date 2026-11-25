@@ -65,13 +65,21 @@ class OrderController extends Controller
 
     $minimumDeposit = $calculatedTotal * 0.30;
 
-    if ($validated['amount_paid'] < $minimumDeposit) {
-        return back()->withErrors(['amount_paid' => 'The minimum deposit required is 30% of the total price (RM ' . number_format($minimumDeposit, 2) . ')'])->withInput();
-    }
+if ($validated['amount_paid'] < $minimumDeposit) {
+    return back()
+        ->withErrors([
+            'amount_paid' => 'The minimum deposit required is 30% (RM ' . number_format($minimumDeposit, 2) . '). Total order price is RM ' . number_format($calculatedTotal, 2) . '.'
+        ])
+        ->withInput();
+}
 
-    if ($validated['amount_paid'] > $calculatedTotal) {
-        return back()->withErrors(['amount_paid' => 'The amount paid cannot exceed the total order price.'])->withInput();
-    }
+if ($validated['amount_paid'] > $calculatedTotal) {
+    return back()
+        ->withErrors([
+            'amount_paid' => 'The amount paid cannot exceed the total order price (RM ' . number_format($calculatedTotal, 2) . '). Please enter a valid total amount.'
+        ])
+        ->withInput();
+}
 
     $order = null;
 
@@ -146,6 +154,8 @@ class OrderController extends Controller
             'order_status'      => $request->order_status,
         ]);
 
+        $this->generateWarrantyIfCompleted($order);
+
         return redirect()->route('salesperson.orders.index')->with('success', 'Order status updated successfully!');
     }
 
@@ -173,6 +183,8 @@ class OrderController extends Controller
                 'payment_status'    => $paymentStatus,
                 'order_status'      => $request->order_status,
             ]);
+
+            $this->generateWarrantyIfCompleted($order);
         });
 
         return redirect()->route('salesperson.orders.index')->with('success', 'Order dikemaskini!');
@@ -227,4 +239,25 @@ class OrderController extends Controller
         $order = Order::with('customer.eyeConditions')->findOrFail($id);
         return view('salesperson.orders.manage', compact('order'));
     }
+
+    private function generateWarrantyIfCompleted(Order $order): void
+{
+    $completedStatuses = ['completed', 'picked up', 'collected'];
+
+    if (!in_array(strtolower($order->order_status ?? ''), $completedStatuses)) {
+        return;
+    }
+
+    Warranty::firstOrCreate(
+        ['order_id' => $order->id],
+        [
+            'customer_id'      => $order->customer_id,
+            'warranty_code'    => 'WRN-' . strtoupper(uniqid()),
+            'coverage_details' => '2-Year Full Frame & Lens Coating Warranty',
+            'start_date'       => now()->toDateString(),
+            'end_date'         => now()->addYears(2)->toDateString(),
+            'status'           => 'Active',
+        ]
+    );
+}
 }

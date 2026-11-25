@@ -80,6 +80,23 @@
                 </div>
             @endif
 
+            <!-- Paparan Mesej Logout / Status -->
+@if (session('status') || session('success'))
+    <div class="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-xl font-semibold flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-emerald-600"></i>
+        <span>{{ session('status') ?? session('success') }}</span>
+    </div>
+@endif
+
+<!-- Paparan Ralat -->
+@if ($errors->any())
+    <div class="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-xl font-medium space-y-1">
+        @foreach ($errors->all() as $error)
+            <p><i class="fa-solid fa-circle-exclamation mr-1"></i> {{ $error }}</p>
+        @endforeach
+    </div>
+@endif
+
             <!-- Borang Log Masuk -->
             <form method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf

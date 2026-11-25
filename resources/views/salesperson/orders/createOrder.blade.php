@@ -6,6 +6,29 @@
             'id' => $c->id,
             'label' => $c->formatted_id . ' - ' . $c->customerName . ' (' . $c->customerEmail . ')',
         ])->values();
+
+        $itemPrices = $items->pluck('price', 'id');
+
+        $initialCustomerId = old('customer_id', $selectedCustomer->id ?? '');
+
+        $rawOldItems = old('items');
+        if (is_array($rawOldItems) && count($rawOldItems) > 0) {
+            $initialItems = collect($rawOldItems)->map(function ($row) use ($itemPrices) {
+                $id = $row['id'] ?? '';
+                $qty = max(1, (int) ($row['qty'] ?? 1));
+                $price = $id !== '' ? (float) ($itemPrices[$id] ?? 0) : 0;
+
+                return [
+                    'id' => (string) $id,
+                    'qty' => $qty,
+                    'price' => $price,
+                ];
+            })->values()->all();
+        } else {
+            $initialItems = [['id' => '', 'qty' => 1, 'price' => 0]];
+        }
+
+        $initialAmountPaid = old('amount_paid', '');
     @endphp
 
     <div class="max-w-4xl mx-auto py-10" x-data="orderForm()">
@@ -60,6 +83,10 @@
                         </button>
                     </div>
 
+                    @error('items')
+                        <p class="text-xs font-semibold text-rose-600">{{ $message }}</p>
+                    @enderror
+
                     <template x-for="(item, index) in items" :key="index">
                         <div class="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
                             <div class="flex-1">
@@ -103,12 +130,19 @@
                 <!-- Bahagian Bayaran -->
                 <div class="space-y-1">
                     <label class="block text-[11px] font-bold text-slate-600 uppercase">Amount Paid (RM)</label>
-                    <input type="number" name="amount_paid" x-model="amountPaid" step="0.01" min="0" class="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#3b127e]" placeholder="0.00" required>
+                    <input type="number" name="amount_paid" x-model="amountPaid" step="0.01" min="0"
+                        class="w-full px-3.5 py-2 rounded-xl border text-xs focus:outline-none focus:border-[#3b127e] {{ $errors->has('amount_paid') ? 'border-rose-400 bg-rose-50/30' : 'border-slate-200' }}"
+                        placeholder="0.00" required>
+
+                    @error('amount_paid')
+                        <p class="text-xs font-semibold text-rose-600">{{ $message }}</p>
+                    @enderror
+
                     <p class="text-[10px] text-slate-400">Minimum payment must cover at least the 30% deposit requirement, and cannot exceed the total price.</p>
                 </div>
 
                 <!-- Butang Simpan -->
-                <div class="pt-4 border-t border-slate-100 flex justify-end">
+                <div class="pt-4 border-t border-slate-100 flex justify-end gap-2">
                     <a href="{{ route('salesperson.orders.index') }}" class="px-4 py-2.5 bg-slate-100 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-200 transition">
                         Back
                     </a>
@@ -124,18 +158,18 @@
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('orderForm', () => ({
-                items: [{ id: '', qty: 1, price: 0 }],
+                items: @json($initialItems),
                 customers: @json($customerList),
                 search: '',
                 open: false,
-                selectedCustomer: '{{ $selectedCustomer->id ?? '' }}',
+                selectedCustomer: '{{ $initialCustomerId }}',
                 showCondition: false,
                 conditionHtml: '',
-                amountPaid: '',
+                amountPaid: '{{ $initialAmountPaid }}',
 
                 init() {
                     if (this.selectedCustomer) {
-                        const c = this.customers.find(c => c.id == this.selectedCustomer);
+                        const c = this.customers.find(c => String(c.id) === String(this.selectedCustomer));
                         if (c) this.search = c.label;
                         this.fetchCustomerConditions(this.selectedCustomer);
                     }
@@ -172,14 +206,14 @@
 
                 calculateTotal() {
                     let total = this.items.reduce((sum, item) => {
-                        return sum + ((item.price || 0) * (item.qty || 0));
+                        return sum + ((parseFloat(item.price) || 0) * (parseFloat(item.qty) || 0));
                     }, 0);
                     return total.toFixed(2);
                 },
 
                 depoTotal() {
                     let total = this.items.reduce((sum, item) => {
-                        return sum + ((item.price || 0) * (item.qty || 0));
+                        return sum + ((parseFloat(item.price) || 0) * (parseFloat(item.qty) || 0));
                     }, 0);
                     let deposit = total * 0.30;
                     return deposit.toFixed(2);

@@ -80,52 +80,6 @@
         </div>
     </div>
 
-    <!-- Modal Edit Customer Details -->
-    <div id="editCustomerModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm hidden">
-        <div class="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl border border-slate-100 mx-4">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <h3 class="text-xl font-bold text-slate-800">Edit Customer Details</h3>
-                    <p class="text-xs text-slate-500">Update general information for {{ $customer->customerName }}</p>
-                </div>
-                <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 p-2">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <form action="{{ route('salesperson.customer.update', $customer->id) }}" method="POST">
-                @csrf
-                @method('PUT')
-
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Customer Name</label>
-                        <input type="text" name="customerName" value="{{ old('customerName', $customer->customerName) }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 outline-none text-sm" required>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Email Address</label>
-                        <input type="email" name="customerEmail" value="{{ old('customerEmail', $customer->customerEmail) }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 outline-none text-sm" required>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Phone Number</label>
-                        <input type="text" name="customerPhoneNumber" value="{{ old('customerPhoneNumber', $customer->customerPhoneNumber) }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 outline-none text-sm" required>
-                    </div>
-                </div>
-
-                <div class="flex justify-end gap-3 mt-6">
-                    <button type="button" onclick="closeEditModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl text-sm transition">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl text-sm transition shadow-md shadow-purple-200">
-                        Save Changes
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Skrip JavaScript untuk Kawal Modal -->
     <script>
         function openEditModal() {

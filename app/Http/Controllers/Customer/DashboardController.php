@@ -230,10 +230,18 @@ class DashboardController extends Controller
 
     // Papar butiran terperinci satu pesanan (Optional jika perlukan page detail)
     public function showOrder($id)
-    {
-        $customer = Auth::user()->customer;
-        $order = Order::where('id', $id)->where('customer_id', $customer->id)->firstOrFail();
+{
+    $customer = Auth::user()->customer;
 
-        return view('customer.orders.show', compact('order'));
+    if (!$customer) {
+        return redirect()->route('customer.dashboard');
     }
+
+    $order = Order::with(['orderItems.item', 'customer'])
+        ->where('id', $id)
+        ->where('customer_id', $customer->id)
+        ->firstOrFail();
+
+    return view('customer.orders.show', compact('order'));
+}
 }

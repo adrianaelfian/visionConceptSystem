@@ -37,12 +37,7 @@
             </form>
         </div>
 
-        <!-- Mesej Kejayaan -->
-        @if(session('success'))
-            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-2xl font-medium flex items-center gap-2">
-                <i class="fa-solid fa-circle-check text-emerald-600"></i> {{ session('success') }}
-            </div>
-        @endif
+
 
         <!-- Jadual Senarai Temujanji -->
         <div class="bg-white rounded-3xl shadow-sm border border-purple-100 overflow-hidden">

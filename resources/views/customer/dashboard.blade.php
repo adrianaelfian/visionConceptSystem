@@ -184,22 +184,22 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-                    <tr class="hover:bg-gray-50/50">
-                        <td class="py-3 px-4 font-semibold text-purple-900">Right Eye (OD)</td>
-                        <td class="py-3 px-4">{{ $latestPrescription->right_sph ?? '0.00' }}</td>
-                        <td class="py-3 px-4">{{ $latestPrescription->right_cyl ?? '0.00' }}</td>
-                        <td class="py-3 px-4">{{ $latestPrescription->right_axis ?? '-' }}</td>
-                        <td class="py-3 px-4">{{ $latestPrescription->right_add ?? '-' }}</td>
-                        <td class="py-3 px-4 font-medium" rowspan="2">{{ $latestPrescription->pd ?? '-' }} mm</td>
-                    </tr>
-                    <tr class="hover:bg-gray-50/50">
-                        <td class="py-3 px-4 font-semibold text-purple-900">Left Eye (OS)</td>
-                        <td class="py-3 px-4">{{ $latestPrescription->left_sph ?? '0.00' }}</td>
-                        <td class="py-3 px-4">{{ $latestPrescription->left_cyl ?? '0.00' }}</td>
-                        <td class="py-3 px-4">{{ $latestPrescription->left_axis ?? '-' }}</td>
-                        <td class="py-3 px-4">{{ $latestPrescription->left_add ?? '-' }}</td>
-                    </tr>
-                </tbody>
+    <tr class="hover:bg-gray-50/50">
+        <td class="py-3 px-4 font-semibold text-purple-900">Right Eye (OD)</td>
+        <td class="py-3 px-4">{{ isset($latestPrescription->rightPower) ? number_format($latestPrescription->rightPower, 2) : '0.00' }}</td>
+        <td class="py-3 px-4">{{ isset($latestPrescription->rightCylinder) ? number_format($latestPrescription->rightCylinder, 2) : '0.00' }}</td>
+        <td class="py-3 px-4">{{ $latestPrescription->rightAxis !== null ? $latestPrescription->rightAxis . '°' : '-' }}</td>
+        <td class="py-3 px-4">{{ $latestPrescription->rightAdd ?? '-' }}</td>
+        <td class="py-3 px-4 font-medium" rowspan="2">{{ $latestPrescription->pupilDistance ?? '-' }} mm</td>
+    </tr>
+    <tr class="hover:bg-gray-50/50">
+        <td class="py-3 px-4 font-semibold text-purple-900">Left Eye (OS)</td>
+        <td class="py-3 px-4">{{ isset($latestPrescription->leftPower) ? number_format($latestPrescription->leftPower, 2) : '0.00' }}</td>
+        <td class="py-3 px-4">{{ isset($latestPrescription->leftCylinder) ? number_format($latestPrescription->leftCylinder, 2) : '0.00' }}</td>
+        <td class="py-3 px-4">{{ $latestPrescription->leftAxis !== null ? $latestPrescription->leftAxis . '°' : '-' }}</td>
+        <td class="py-3 px-4">{{ $latestPrescription->leftAdd ?? '-' }}</td>
+    </tr>
+</tbody>
             </table>
         </div>
     @else
