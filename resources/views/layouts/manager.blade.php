@@ -25,17 +25,6 @@
             <!-- KANDUNGAN UTAMA SEBELAH KANAN -->
             <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
                 <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-10">
-                    @if(session('success'))
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @if($errors->any())
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                            {{ $errors->first() }}
-                        </div>
-                    @endif
                     @yield('content')
                 </main>
             </div>

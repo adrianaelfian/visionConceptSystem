@@ -90,9 +90,9 @@
         </div>
 
         <!-- 2. BORANG KEMASKINI (Papar bila butang 'Edit Profile' ditekan) -->
-        <form x-show="editing" action="{{ route('profile.update') }}" method="POST" class="space-y-4 pt-2" style="display: none;">
-            @csrf
-            @method('PUT')
+        <form x-show="editing" action="{{ route('customer.profile.update') }}" method="POST" class="space-y-4 pt-2" style="display: none;">
+    @csrf
+    @method('PUT')
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                 <div>

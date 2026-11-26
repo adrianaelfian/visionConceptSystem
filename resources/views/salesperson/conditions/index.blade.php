@@ -12,10 +12,7 @@
 </p>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('salesperson.conditions.create', ['customer_id' => $customer->id]) }}" class="inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold shadow-lg shadow-indigo-200 hover:from-purple-700 hover:to-indigo-700 transition">
-                    <i class="fa-solid fa-plus text-xs"></i>
-                    <span>Add New Prescription</span>
-                </a>
+
                 <a href="{{ route('salesperson.customer.index') }}" class="inline-flex items-center justify-center px-4 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold transition text-sm">
                     <i class="fa-solid fa-arrow-left mr-2"></i> Back
                 </a>

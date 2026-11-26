@@ -1,5 +1,7 @@
-<x-salesperson-layout>
-    <div class="max-w-3xl mx-auto bg-white p-10 shadow-sm border border-slate-100 rounded-2xl">
+@extends('layouts.salesperson')
+
+@section('content')
+    <div class="max-w-3xl mx-auto bg-white p-10 shadow-sm border border-slate-100 rounded-2xl print:shadow-none print:border-none print:p-0">
         <div class="flex justify-between border-b border-slate-100 pb-6 mb-6">
             <div>
                 <h1 class="text-2xl font-black text-[#2e1065]">INVOICE</h1>
@@ -20,6 +22,7 @@
             <thead class="border-b border-slate-100">
                 <tr class="text-left text-slate-400 uppercase text-[10px] tracking-wider">
                     <th class="py-3 px-2 font-bold">Item</th>
+                    <th class="py-3 px-2 font-bold text-center">Qty</th>
                     <th class="py-3 px-2 font-bold text-right">Price</th>
                 </tr>
             </thead>
@@ -27,6 +30,7 @@
                 @foreach($order->orderItems as $item)
                 <tr>
                     <td class="py-3 px-2 font-bold text-slate-900">{{ $item->item->name ?? $item->item->itemName ?? 'Optical Product' }}</td>
+                    <td class="py-3 px-2 text-center font-semibold text-slate-600">{{ $item->quantity ?? 1 }}</td>
                     <td class="py-3 px-2 text-right font-bold text-[#3b127e]">RM {{ number_format($item->price, 2) }}</td>
                 </tr>
                 @endforeach
@@ -51,4 +55,4 @@
             </button>
         </div>
     </div>
-</x-salesperson-layout>
+@endsection

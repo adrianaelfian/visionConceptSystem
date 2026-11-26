@@ -27,6 +27,17 @@
             <!-- KANDUNGAN UTAMA SEBELAH KANAN -->
             <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
                 <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 md:p-10">
+                    @if(session('success'))
+    <div class="mb-6 bg-emerald-50 border border-emerald-100 text-emerald-700 px-4 py-3 rounded-2xl text-xs font-bold shadow-sm">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="mb-6 bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-2xl text-xs font-bold shadow-sm">
+        {{ $errors->first() }}
+    </div>
+@endif
                     @yield('content')
                 </main>
             </div>
